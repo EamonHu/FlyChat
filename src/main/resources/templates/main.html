@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网络聊天室</title>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="/CSS/main.css">
+</head>
+<style>
+
+</style>
+<body>
+<div id = "contains">
+    <div id="username">
+        <h3 style="height: auto;">当前用户：张三<span>-在线</span></h3>
+    </div>
+    <button id="logout" onclick="LoginOut()">退出</button>
+    <div id="Inchat"></div>
+    <div id="left">
+        <div id="bgImg" style="position: relative;text-align: center;">
+            <div id="bgImg1"></div>
+            <div id="content"></div>
+        </div>
+        <div id="input">
+            <textarea autofocus type="text" id="input_text" style="width: 693px;right: 0;"></textarea>
+            <button id="submit" style="float: right;">发送</button></a>
+        </div>
+    </div>
+    <div id="right">
+        <p id="hy" style="text-align: center;background-color: #d6ecf0;">好友列表</p>
+        <div id="hyList">
+
+        </div>
+    </div>
+</div>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+    var toName;
+    var username;
+    var history;
+    // 退出
+    function LoginOut(){
+        console.log("out") 
+        window.location.href="http://localhost:8080/login"
+        sessionStorage.clear()
+       
+    }
+    //点击好友名称展示相关消息
+    function showChat(name){
+        toName = name;
+        console.log("ShowChat  name",name)
+        //现在聊天框
+        $("#content").html("");
+        $("#content").css("visibility","visible");
+        $("#bgImg1").css("visibility","hidden");
+        $("#Inchat").html("    当前正与"+toName+"聊天");
+        //从sessionStorage中获取历史信息
+        var chatData = sessionStorage.getItem(toName);
+        console.log("chatData",chatData)
+        if (chatData != null){
+            $("#content").html(chatData);
+        }
+        
+
+    }
+    $(function () {
+        // 获取当前登录用户的名字
+        $.ajax({
+            url:"getUsername",
+            success:function (res) {
+                username = res;
+                console.log("username",username)
+            },
+            async:false //同步请求，只有上面好了才会接着下面
+        });
+        // 获取历史记录
+        $.ajax({
+            url:"getChatRecordsByName",
+            success:function(response){
+                history = response;
+                console.log("history::",history);
+            }
+        })
+        //建立websocket连接
+        //获取host解决后端获取httpsession的空指针异常
+        var host = window.location.host;
+        var ws = new WebSocket("ws://"+host+"/chat");
+        ws.onopen = function (evt) {
+            $("#username").html("<h3 style=\"text-align: center;\">用户："+ username +"<span>-在线</span></h3>");
+        }
+        //接受消息
+        ws.onmessage = function (evt) {
+            //接受以登陆用户
+            var arr1=[]
+            //接受未登录用户
+            var arr2=[]
+            //获取服务端推送的消息
+            var dataStr = evt.data;
+            //将dataStr转换为json对象
+            var res = JSON.parse(dataStr);
+            console.log("res:::",res)
+            console.log("res.message",res.message)
+            for (let name in res.message ){
+                console.log("name",name)
+                console.log("res.message[name]",res.message[name])
+                if(res.message[name].status==true){
+                    arr1.push(name)
+                }else{
+                    arr2.push(name)
+                }
+            }
+            console.log("arr1",arr1)
+            console.log("arr2",arr2)
+
+            //判断是否是系统消息
+            if(res.system){
+                //系统消息
+                //1.好友列表展示
+                //此处声明的变量是调试时命名的，可以直接合并
+                var names = arr1
+                console.log("names::",names)
+                var userlistStr = "";
+                var Div1="<div style=\'width:388px;height:40px;background-color:#00e079;line-height:40px;\'>";
+                var Div2="</div>"
+                var temp01 = "<a style=\"text-align: center;color:white; height:30px;line-height:30px;display:inline-block;\" onclick='showChat(\"";
+                var temp03 = "\")'>";
+                var temp04 = "</a></br>";
+                var temp = "";
+                var OnLine1 = "<span style=\'display:inline-block;height:5px;width:50px\'></span><span style=\'color:white;font-size:16px;display:inline-block;line-height:30px;width:30px;height:30px;border:1px solid #000;text-align: center;border-radius: 50%;\'>";
+                var OnLine2 = "</span>"
+                for (var i=0; i<names.length; i++){
+                    if (names[i] != username){
+                        temp = Div1 + OnLine1 + names[i].substr(0,1) + OnLine2 + temp01 + names[i] + temp03 + names[i] + temp04 + Div2;
+                        userlistStr = userlistStr + temp;
+                    }
+                }
+                //渲染好友列表
+                // $("#hyList").html(userlistStr);
+                // 未登录
+                var DIV1 = "<div style=\'width:388px;height:40px;background-color:#bacac6;color:#c0ebd7!important;line-height:40px;\'>";
+                var names2 = arr2
+                var userlistStr2="";
+                var temp2="";
+                for (var i=0; i<names2.length; i++){
+                    if (names2[i] != username){
+                        temp2 = DIV1 + OnLine1 + names2[i].substr(0,1) + OnLine2 + temp01 + names2[i] + temp03 + names2[i] + temp04 + Div2;
+                        userlistStr2 = userlistStr2 + temp2;
+                    }
+                }
+                //渲染好友列表
+                var FinallUserList = userlistStr+userlistStr2
+                $("#hyList").html(FinallUserList);
+
+            }else {
+                //不是系统消息
+                var str = "<span id='mes_left'>"+ res.message +"</span></br>";
+                if (toName === res.fromName) {
+                    $("#content").append(str);
+                }
+                var chatData = sessionStorage.getItem(res.fromName);
+                if (chatData != null){
+                    str = chatData + str;
+                }
+                //保存聊天消息
+                sessionStorage.setItem(res.fromName,str);
+            };
+        }
+        ws.onclose = function () {
+            $("#username").html("<h3 style=\"text-align: center;\">用户："+ username +"<span>-离线</span></h3>");
+        }
+
+        //发送消息
+        $("#submit").click(function () {
+            //1.获取输入的内容
+            var data = $("#input_text").val();
+            //2.清空发送框
+            $("#input_text").val("");
+            var json = {"toName": toName ,"message": data};
+            //将数据展示在聊天区
+            var ChetUser = "<span style='color:blue'>" + "--"  + username + "</span>";
+            var str = "<div id='mes_right'>"+  data +ChetUser +"</div></br>";
+            $("#content").append(str);
+
+            var chatData = sessionStorage.getItem(toName);
+            if (chatData != null){
+                str = chatData + str;
+            }
+            sessionStorage.setItem(toName,str);
+            //3.发送数据
+            ws.send(JSON.stringify(json));
+        })
+    })
+</script>
+
+</html>

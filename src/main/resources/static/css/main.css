@@ -1,0 +1,137 @@
+#contains{
+    background-color: white;
+    position: relative;
+    width: 1000px;
+    height: 394px;
+    margin: auto;
+    border-bottom: 2px solid #392f41;
+}
+#username{
+    background-color: #392f41;
+    width: 1000px;
+    height: 30px;
+    border-radius: 20px 20px 0 0;
+    border-top: 1px solid #000;
+    color: white;
+}
+#Inchat{
+    background-color: #392f41;
+    width: 1000px;
+    height: 30px;
+    color: white;
+    text-align: right;
+
+}
+#left{
+    background-color: white;
+    width: 700px;
+    height: 324px;
+    float: right;
+    position: relative;
+    border-right: 2px solid #392f41;
+}
+#content{
+    background-color: white;
+    padding-left: 5px;
+    width: 695px;
+    height: 300px;
+    /*display: none;*/
+    visibility: hidden;
+    z-index: 999;
+}
+#bgImg1 {
+    top: 20px;
+    left: 200px;
+    width: 200px;
+    height: 200px;
+    position: absolute;
+    background: url(../img/chat.png) no-repeat;
+    visibility: visible;
+}
+#right{
+    background-color: #d6ecf0;
+    width: 300px;
+    height: 447px;
+    position: absolute;
+    float: left;
+    border-left: 2px solid #392f41;
+    border-bottom: 2px solid #392f41;
+}
+#hyList{
+    height: 393px;
+    overflow-y: scroll;
+    background: white;
+    cursor: pointer;
+}
+.selected{
+    color: blueviolet;
+}
+
+#xtList{
+    height: 101.5px;
+    overflow-y: scroll;
+    background: white;
+    border-bottom: 2px solid #392f41;
+    cursor: pointer;
+}
+#input{
+    margin-bottom: 0px;
+    right: -2px;
+    position: absolute;
+    /*bottom: 0px;*/
+    height: 100px;
+}
+#mes_left{
+    float: left;
+    max-width: 490px;
+    /* padding: 15px; */
+    position: absolute;
+    left: 10px;
+    overflow: hidden;
+}
+#mes_right{
+    float: right;
+    max-width: 490px;
+    /* padding: 15px; */
+    margin: 10px;
+    position: absolute;
+    right: 5px;
+    overflow: hidden;
+}
+#hy{
+    display: block;
+    width: 300px;
+}
+textarea {
+    resize: none;
+    border: none;
+    outline: none;
+    height: 141.3px!important;
+    background-color: white;
+    border-bottom: 2px solid #392f41;
+    border-right: 2px solid #392f41;
+    border-top: 2px solid #392f41;
+}
+#submit{
+    position: absolute;
+    right: 20px;
+    bottom: -30px;
+}
+
+/* 退出 */
+#logout{
+    position: fixed;
+    top:16px;
+    left: 150px;
+    display: block;
+    width: 50px;
+    height: 50px;
+    border: 1px solid #999;
+    border-radius: 50%;
+}
+#logout:hover{
+    background-color: red;
+    color: white;
+}
+/* 聊天信息框 */
+
