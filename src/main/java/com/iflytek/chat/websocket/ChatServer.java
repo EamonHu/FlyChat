@@ -151,6 +151,7 @@ public class ChatServer {
         } else {
             return;
         }
+
         try {
             // 遍历两个人之间的聊天记录，并逐一发送
             for (ArrayList<String> singleRecord : records) {

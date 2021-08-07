@@ -19,9 +19,6 @@ public class MessageUtils {
             if(fromName != null){
                 resultMessage.setFromName(fromName);
             }
-//            if(toName !=null ){
-//                resultMessage.setToName(toName);
-//            }
             ObjectMapper mapper = new ObjectMapper();
             return mapper.writeValueAsString(resultMessage);
         }catch (JsonProcessingException e){

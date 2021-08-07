@@ -36,7 +36,7 @@ public class UserController {
         log.info(System.currentTimeMillis() + loginUser + "登录验证中..");
         if (httpSession.getAttribute(Constant.USER) != null) {
             result.setFlag(false);
-            result.setMessage("不支持一个浏览器登录多个用户！");
+            result.setMessage("不支持一个浏览器登录多个用户，换个浏览器登录吧~");
             return result;
         }
         // 判断登录用户的密码是否正确
@@ -44,7 +44,7 @@ public class UserController {
             User mapUser = Constant.allUserMap.get(loginUser);
             if (!mapUser.getPassWord().equals(loginPwd)) {
                 result.setFlag(false);
-                log.info(loginUser + "登录校验失败");
+                log.warn(loginUser + "登录校验失败");
                 result.setMessage("登录校验失败");
                 return result;
             }
@@ -62,6 +62,11 @@ public class UserController {
         return result;
     }
 
+
+    /**
+     * 获取用户名
+     * @return 用户名
+     */
     @RequestMapping("/getUsername")
     public String getUsername(HttpSession httpSession) {
         return (String) httpSession.getAttribute("user");
@@ -72,7 +77,7 @@ public class UserController {
      * 获取用户间的历史聊天信息
      * @param toUsername 发送对象
      * @param httpSession webSocket的Session
-     * @return
+     * @return Result
      */
     @RequestMapping("/getChatRecordsByName")
     public Result getChatRecordsByName(String toUsername, HttpSession httpSession) {

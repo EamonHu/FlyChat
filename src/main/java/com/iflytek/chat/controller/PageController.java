@@ -5,22 +5,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * @Author: ymhu5
- * @Description:
+ * @Description: 网页跳转
  * @Date: 2021/8/6 0:45
  */
 @Controller
 public class PageController {
     @RequestMapping("/login")
     public String login(){
-        System.out.println("========访问login页面==========");
-
         return "login";
     }
 
     @RequestMapping("/main")
 
     public String main(){
-        System.out.println("========访问main页面==========");
         return "main";
     }
 

@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @Author: ymhu5
- * @Description:
+ * @Description: 用户拦截类
  * @Date: 2021/8/6 1:09
  */
 @Component
@@ -29,12 +29,10 @@ public class UserInterceptor implements HandlerInterceptor {
         log.info("进入拦截器"+"==="+"进入拦截器的用户是："+username);
         if(username != null && !onLineUsers.containsKey(username)){
             onLineUsers.put(username,username);
-            log.info("已进入拦截器判断");
-            log.info("已存储的用户01"+onLineUsers);
+            log.info("已存储的用户："+onLineUsers);
             return true;
         }else {
-            log.info("已存储的用户02" + onLineUsers);
-            log.info("未进入判断，进行重定向");
+            log.warn("未授权用户");
             httpSession.removeAttribute("user");
             response.sendRedirect("/loginerror");
             return false;
